@@ -12,7 +12,8 @@ export async function uploadDocument(file: File): Promise<UploadResponse> {
     })
 
     if (!response.ok) {
-        throw new Error("Upload failed")
+        const errorData = await response.json()
+        throw new Error(errorData.detail)
     }
 
     return response.json()
