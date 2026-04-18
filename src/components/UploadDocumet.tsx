@@ -36,7 +36,7 @@ export default function UploadPanel() {
     }
 
     return (
-        <div className="rounded-3xl border border-stone-800 bg-stone-900 p-6 max-w-lg">
+        <div className="rounded-3xl border border-stone-800 bg-stone-900 p-6 max-w-lg ml-0 sm:ml-15">
             <div className="flex flex-col gap-1">
                 <h2 className="text-xl font-semibold text-stone-50">Upload document</h2>
             </div>
