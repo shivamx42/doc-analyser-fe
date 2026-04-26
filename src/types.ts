@@ -54,6 +54,7 @@ export type AuthSession = {
     refreshToken: string
     userId: string
     email: string
+    displayName: string
 }
 
 export type DocumentListItem = {
