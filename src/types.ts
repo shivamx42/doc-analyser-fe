@@ -22,3 +22,48 @@ export type QueryResponse = {
     answer: string
     results: ChunkResult[]
 }
+
+export type RegisterRequest = {
+    email: string
+    password: string
+    display_name: string
+}
+
+export type RegisterResponse = {
+    user_id: string
+    email: string
+    display_name: string
+    message: string
+}
+
+export type LoginRequest = {
+    email: string
+    password: string
+}
+
+export type LoginResponse = {
+    access_token: string
+    refresh_token: string
+    user_id: string
+    email: string
+    display_name: string
+}
+
+export type AuthSession = {
+    accessToken: string
+    refreshToken: string
+    userId: string
+    email: string
+}
+
+export type DocumentListItem = {
+    id: string
+    filename: string
+    content_type: string
+    total_pages: number
+    created_at: string
+}
+
+export type DocumentListResponse = {
+    documents: DocumentListItem[]
+}
