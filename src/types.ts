@@ -67,4 +67,5 @@ export type DocumentListItem = {
 
 export type DocumentListResponse = {
     documents: DocumentListItem[]
+    name: string
 }
