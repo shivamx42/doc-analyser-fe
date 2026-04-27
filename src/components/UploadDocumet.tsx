@@ -3,7 +3,11 @@ import { useRef, useState } from 'react'
 import { uploadDocument } from '../api/uploadDocument'
 import type { UploadResponse } from '../types'
 
-export default function UploadPanel() {
+type UploadPanelProps = {
+    onUploadSuccess?: () => void
+}
+
+export default function UploadPanel({ onUploadSuccess }: UploadPanelProps) {
     const [file, setFile] = useState<File | null>(null)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState("")
@@ -24,6 +28,7 @@ export default function UploadPanel() {
         try {
             const response = await uploadDocument(file)
             setData(response)
+            onUploadSuccess?.()
         } catch (uploadError) {
             setError(uploadError instanceof Error ? uploadError.message : 'Upload failed')
         } finally {
