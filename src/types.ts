@@ -7,7 +7,7 @@ export type UploadResponse = {
 
 export type QueryRequest = {
     question: string
-    document_id?: string
+    document_ids?: string[]
 }
 
 export type ChunkResult = {

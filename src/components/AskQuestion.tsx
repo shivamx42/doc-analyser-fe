@@ -3,7 +3,11 @@ import { useState } from 'react'
 import { askQuestion } from '../api/askQuestion'
 import type { QueryResponse } from '../types'
 
-export default function QueryPanel() {
+type QueryPanelProps = {
+    selectedDocumentIds: string[]
+}
+
+export default function QueryPanel({ selectedDocumentIds }: QueryPanelProps) {
     const [question, setQuestion] = useState("")
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState("")
@@ -22,6 +26,7 @@ export default function QueryPanel() {
         try {
             const response = await askQuestion({
                 question: question.trim(),
+                document_ids: selectedDocumentIds,
             })
             setData(response)
         } catch (queryError) {
@@ -39,6 +44,12 @@ export default function QueryPanel() {
                     Ask about the uploaded content and get an answer back
                 </h1>
             </div>
+
+            <p className="mt-4 rounded-2xl border border-stone-800 bg-stone-950/70 px-4 py-3 text-sm text-stone-400">
+                {selectedDocumentIds.length > 0
+                    ? `Searching in ${selectedDocumentIds.length} selected document${selectedDocumentIds.length === 1 ? '' : 's'}.`
+                    : 'No documents selected, search will include all your documents.'}
+            </p>
 
             <div className="mt-5 block text-sm text-stone-300">
                 <span className="mb-4 block font-semibold">Question</span>
