@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import type { Dispatch, SetStateAction } from 'react'
 
 import { getDocuments } from '../api/getDocuments'
+import DeleteDocumentButton from './DeleteDocumentButton'
 import type { DocumentListItem } from '../types'
 
 const MAX_SELECTED_DOCUMENTS = 10
@@ -75,9 +76,18 @@ export default function DocumentsPanel({
         })
     }
 
+    function handleDeletedDocument(documentId: string) {
+        setDocuments((currentDocuments) => (
+            currentDocuments.filter((document) => document.id !== documentId)
+        ))
+        onSelectedDocumentIdsChange((currentDocumentIds) => (
+            currentDocumentIds.filter((selectedDocumentId) => selectedDocumentId !== documentId)
+        ))
+    }
+
     return (
         <div className="rounded-3xl border border-stone-800 bg-stone-900 p-6 w-full lg:sticky lg:top-10">
-            {loading ? (null) : (<div className="flex flex-col gap-1">
+            {loading || !name ? (null) : (<div className="flex flex-col gap-1">
                 <h2 className="text-xl font-semibold text-stone-50">{name}'s Documents</h2>
                 <p className="text-xs text-stone-500">
                     Select up to {MAX_SELECTED_DOCUMENTS} documents to narrow search
@@ -90,7 +100,7 @@ export default function DocumentsPanel({
             
 
             {loading ? (
-                <p className="mt-5 text-sm text-stone-400">Loading documents...</p>
+                <p className=" text-sm text-stone-400">Loading documents...</p>
             ) : null}
 
             {error ? (
@@ -107,34 +117,48 @@ export default function DocumentsPanel({
 
             {!loading && !error && documents.length > 0 ? (
                 <div className="mt-5 flex flex-col gap-3 max-h-96 overflow-y-auto pr-4">
-                    {documents.map((document) => (
-                        <button
-                            key={document.id}
-                            type="button"
-                            onClick={() => toggleDocument(document.id)}
-                            disabled={
-                                !selectedDocumentIds.includes(document.id) && selectedDocumentIds.length >= MAX_SELECTED_DOCUMENTS
-                            }
-                            className={`rounded-2xl border p-4 text-left transition ${
-                                selectedDocumentIds.includes(document.id)
-                                    ? 'border-[#44a1bb] bg-[#44a1bb]/15'
-                                    : 'border-stone-700 bg-stone-950 hover:border-stone-500'
-                            } ${
-                                !selectedDocumentIds.includes(document.id) &&
-                                selectedDocumentIds.length >= MAX_SELECTED_DOCUMENTS
-                                    ? 'cursor-not-allowed opacity-45'
-                                    : 'cursor-pointer'
-                            }`}
-                        >
-                            <h1 className="text-lg font-semibold text-stone-100 wrap-break-word">
-                                {truncateText(document.filename, 30)}
-                            </h1>
-                            <div className="mt-3 flex flex-col gap-1 text-xs text-stone-400">
-                                <p>{document.total_pages} pages</p>
-                                <p>Added on {formatCreatedAt(document.created_at)}</p>
+                    {documents.map((document) => {
+                        const isSelected = selectedDocumentIds.includes(document.id)
+                        const selectionDisabled = !isSelected && selectedDocumentIds.length >= MAX_SELECTED_DOCUMENTS
+
+                        return (
+                            <div
+                                key={document.id}
+                                className={`rounded-2xl border p-4 transition ${
+                                    isSelected
+                                        ? 'border-[#44a1bb] bg-[#44a1bb]/15'
+                                        : 'border-stone-700 bg-stone-950 hover:border-stone-500'
+                                }`}
+                            >
+                                <div className="flex items-start gap-3">
+                                    <button
+                                        type="button"
+                                        onClick={() => toggleDocument(document.id)}
+                                        disabled={selectionDisabled}
+                                        className={`min-w-0 flex-1 text-left ${
+                                            selectionDisabled
+                                                ? 'cursor-not-allowed opacity-45'
+                                                : 'cursor-pointer'
+                                        }`}
+                                    >
+                                        <h1 className="text-lg font-semibold text-stone-100 wrap-break-word">
+                                            {truncateText(document.filename, 30)}
+                                        </h1>
+                                        <div className="mt-3 flex flex-col gap-1 text-xs text-stone-400">
+                                            <p>{document.total_pages} {document.total_pages === 1 ? "page" : "pages"}</p>
+                                            <p>Added on {formatCreatedAt(document.created_at)}</p>
+                                        </div>
+                                    </button>
+
+                                    <DeleteDocumentButton
+                                        documentId={document.id}
+                                        filename={document.filename}
+                                        onDeleted={handleDeletedDocument}
+                                    />
+                                </div>
                             </div>
-                        </button>
-                    ))}
+                        )
+                    })}
                 </div>
             ) : null}
         </div>
