@@ -69,3 +69,8 @@ export type DocumentListResponse = {
     documents: DocumentListItem[]
     name: string
 }
+
+export type DeleteDocumentResponse = {
+    document_id: string
+    message: string
+}
