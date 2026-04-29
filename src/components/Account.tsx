@@ -102,7 +102,7 @@ export default function Account() {
     }
 
     return (
-        <section className="rounded-3xl border border-stone-800 bg-stone-900 p-6 max-w-2xl ml-0 sm:ml-15">
+        <section className="rounded-3xl border border-stone-800 bg-stone-900 p-6 max-w-lg ml-0 sm:ml-15">
             <div className="mt- inline-flex rounded-2xl border border-stone-700 bg-stone-950 p-1">
                 <button
                     type="button"

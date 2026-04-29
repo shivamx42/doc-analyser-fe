@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import type { Dispatch, SetStateAction } from 'react'
+import { FileText, Loader2 } from 'lucide-react'
 
 import { getDocuments } from '../api/getDocuments'
 import DeleteDocumentButton from './DeleteDocumentButton'
@@ -26,17 +27,27 @@ type DocumentsPanelProps = {
     refresh: number
     selectedDocumentIds: string[]
     onSelectedDocumentIdsChange: Dispatch<SetStateAction<string[]>>
+    onDocumentsStateChange?: (state: { count: number; loading: boolean }) => void
 }
 
 export default function DocumentsPanel({
     refresh,
     selectedDocumentIds,
     onSelectedDocumentIdsChange,
+    onDocumentsStateChange,
 }: DocumentsPanelProps) {
     const [documents, setDocuments] = useState<DocumentListItem[]>([])
     const [name, setName] = useState("")
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState("")
+    const selectionLimit = Math.min(MAX_SELECTED_DOCUMENTS, documents.length)
+
+    useEffect(() => {
+        onDocumentsStateChange?.({
+            count: documents.length,
+            loading,
+        })
+    }, [documents.length, loading, onDocumentsStateChange])
 
     useEffect(() => {
 
@@ -86,37 +97,47 @@ export default function DocumentsPanel({
     }
 
     return (
-        <div className="rounded-3xl border border-stone-800 bg-stone-900 p-6 w-full lg:sticky lg:top-10">
-            {loading || !name ? (null) : (<div className="flex flex-col gap-1">
-                <h2 className="text-xl font-semibold text-stone-50">{name}'s Documents</h2>
-                <p className="text-xs text-stone-500">
-                    Select up to {MAX_SELECTED_DOCUMENTS} documents to narrow search
-                </p>
-                <p className="text-xs font-semibold text-[#7699ae]">
-                    {selectedDocumentIds.length} / {MAX_SELECTED_DOCUMENTS} selected
-                </p>
-                
-            </div>)}
+        <div className="w-full rounded-lg border border-stone-800 bg-stone-900 p-4 max-h-96 overflow-auto">
+            {loading || !name ? (null) : (
+                <div className="flex items-start justify-between gap-3">
+                    <div>
+                        <h2 className="text-base font-bold text-stone-300">{name}'s Documents</h2>
+                        <p className="mt-1 text-xs text-stone-400">
+                            {documents.length > 0
+                                ? `Select up to ${selectionLimit} document${selectionLimit === 1 ? '' : 's'}`
+                                : 'Upload documents to search them'}
+                        </p>
+                    </div>
+                    {documents.length > 0 ? (
+                        <p className="shrink-0 rounded-md border border-[#44a1bb]/30 bg-[#44a1bb]/10 px-2 py-1 text-xs font-semibold text-[#83cfe4]">
+                            {selectedDocumentIds.length}/{selectionLimit}
+                        </p>
+                    ) : null}
+                </div>
+            )}
             
 
             {loading ? (
-                <p className=" text-sm text-stone-400">Loading documents...</p>
+                <div className="flex items-center gap-2 text-sm text-stone-400">
+                    <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+                    Loading documents...
+                </div>
             ) : null}
 
             {error ? (
-                <p className="mt-4 rounded-2xl border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+                <p className="mt-3 rounded-md border border-red-500/40 bg-red-500/10 px-3 py-2 text-sm text-red-200">
                     {error}
                 </p>
             ) : null}
 
             {!loading && !error && documents.length === 0 ? (
-                <div className="mt-5 rounded-2xl border border-stone-700 bg-stone-950 p-4 text-sm text-stone-300">
+                <div className="mt-4 rounded-md border border-dashed border-stone-700 bg-stone-950/80 px-3 py-4 text-sm text-stone-400">
                     No documents uploaded yet
                 </div>
             ) : null}
 
             {!loading && !error && documents.length > 0 ? (
-                <div className="mt-5 flex flex-col gap-3 max-h-96 overflow-y-auto pr-4">
+                <div className="mt-4 flex max-h-105 flex-col gap-2 overflow-y-auto pr-1">
                     {documents.map((document) => {
                         const isSelected = selectedDocumentIds.includes(document.id)
                         const selectionDisabled = !isSelected && selectedDocumentIds.length >= MAX_SELECTED_DOCUMENTS
@@ -124,7 +145,7 @@ export default function DocumentsPanel({
                         return (
                             <div
                                 key={document.id}
-                                className={`rounded-2xl border p-4 transition ${
+                                className={`rounded-md border px-3 py-3 transition ${
                                     isSelected
                                         ? 'border-[#44a1bb] bg-[#44a1bb]/15'
                                         : 'border-stone-700 bg-stone-950 hover:border-stone-500'
@@ -135,18 +156,21 @@ export default function DocumentsPanel({
                                         type="button"
                                         onClick={() => toggleDocument(document.id)}
                                         disabled={selectionDisabled}
-                                        className={`min-w-0 flex-1 text-left ${
+                                        className={`flex min-w-0 flex-1 items-start gap-3 text-left ${
                                             selectionDisabled
                                                 ? 'cursor-not-allowed opacity-45'
                                                 : 'cursor-pointer'
                                         }`}
                                     >
-                                        <h1 className="text-lg font-semibold text-stone-100 wrap-break-word">
-                                            {truncateText(document.filename, 30)}
-                                        </h1>
-                                        <div className="mt-3 flex flex-col gap-1 text-xs text-stone-400">
-                                            <p>{document.total_pages} {document.total_pages === 1 ? "page" : "pages"}</p>
-                                            <p>Added on {formatCreatedAt(document.created_at)}</p>
+                                        <FileText className="mt-0.5 h-4 w-4 shrink-0 text-[#83cfe4]" aria-hidden="true" />
+                                        <div className="min-w-0">
+                                            <h3 className="wrap-break-word text-sm font-semibold text-stone-100">
+                                                {truncateText(document.filename)}
+                                            </h3>
+                                            <div className="mt-1 flex flex-col gap-0.5 text-xs text-stone-400 sm:flex-row sm:gap-2">
+                                                <p>{document.total_pages} {document.total_pages === 1 ? "page" : "pages"}</p>
+                                                <p>Added {formatCreatedAt(document.created_at)}</p>
+                                            </div>
                                         </div>
                                     </button>
 
