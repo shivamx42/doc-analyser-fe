@@ -97,7 +97,7 @@ export default function UploadPanel({ onUploadSuccess }: UploadPanelProps) {
                         <p className="truncate font-medium text-stone-100">{file.name}</p>
                         <p className="text-xs text-stone-500">{formatFileSize(file.size)}</p>
                     </div>
-                    <button
+                    {!loading && (<button
                         type="button"
                         aria-label="Remove selected file"
                         onClick={() => {
@@ -106,10 +106,10 @@ export default function UploadPanel({ onUploadSuccess }: UploadPanelProps) {
                                 inputRef.current.value = ""
                             }
                         }}
-                        className="rounded-md p-1 text-stone-500 transition hover:bg-stone-800 hover:text-stone-100"
+                        className="rounded-md p-1 text-stone-500 transition hover:bg-stone-800 hover:text-stone-100 hover:cursor-pointer"
                     >
                         <X className="h-4 w-4" aria-hidden="true" />
-                    </button>
+                    </button>)}
                 </div>
             ) : null}
 

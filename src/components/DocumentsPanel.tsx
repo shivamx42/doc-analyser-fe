@@ -137,7 +137,7 @@ export default function DocumentsPanel({
             ) : null}
 
             {!loading && !error && documents.length > 0 ? (
-                <div className="mt-4 flex max-h-105 flex-col gap-2 overflow-y-auto pr-1">
+                <div className="mt-4 flex flex-col gap-2 pr-1">
                     {documents.map((document) => {
                         const isSelected = selectedDocumentIds.includes(document.id)
                         const selectionDisabled = !isSelected && selectedDocumentIds.length >= MAX_SELECTED_DOCUMENTS
