@@ -96,7 +96,7 @@ export default function QueryPanel({
             ) : (
                 <>
                     <label className="mt-5 block text-sm text-stone-300">
-                        <span className="mb-2 block font-semibold">Question</span>
+                        <span className="mb-2 block font-semibold">Ask a question</span>
                         <textarea
                             value={question}
                             onChange={(event) => {
@@ -104,7 +104,7 @@ export default function QueryPanel({
                                 setError("")
                             }}
                             rows={5}
-                            placeholder="Ask relevant questions"
+                            placeholder="What is the main conclusion of the report?"
                             className="min-h-36 w-full resize-y rounded-md border border-stone-700 bg-stone-950 px-3 py-3 text-base text-stone-100 outline-none transition placeholder:text-stone-500 focus:border-[#44a1bb] sm:text-sm"
                         />
                     </label>
@@ -133,7 +133,7 @@ export default function QueryPanel({
                             className="inline-flex h-10 items-center justify-center gap-2 rounded-md bg-[#44a1bb] px-4 text-sm font-semibold text-stone-950 transition hover:bg-[#47acc8] disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer"
                         >
                             <Search className="h-4 w-4" aria-hidden="true" />
-                            {loading ? 'Thinking...' : 'Ask question'}
+                            {loading ? 'Thinking...' : 'Search'}
                         </button>
                     </div>
                 </>
