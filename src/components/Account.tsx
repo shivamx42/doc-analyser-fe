@@ -102,8 +102,15 @@ export default function Account() {
     }
 
     return (
-        <section className="rounded-3xl border border-stone-800 bg-stone-900 p-6 max-w-lg ml-0 sm:ml-15">
-            <div className="mt- inline-flex rounded-2xl border border-stone-700 bg-stone-950 p-1">
+        <div className="mx-auto max-w-lg">
+            <div className="mb-8 text-center">
+                <p className="mt-3 text-stone-400">
+                    Login or create an account to upload your documents and start querying them with AI.
+                </p>
+            </div>
+            <section className="rounded-3xl border border-stone-800 bg-stone-900 p-6">
+
+            <div className="inline-flex rounded-2xl border border-stone-700 bg-stone-950 p-1">
                 <button
                     type="button"
                     onClick={() => {
@@ -259,5 +266,6 @@ export default function Account() {
                 </p>
             ) : null}
         </section>
+    </div>
     )
 }
