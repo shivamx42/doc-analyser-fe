@@ -74,3 +74,21 @@ export type DeleteDocumentResponse = {
     document_id: string
     message: string
 }
+
+export type ShareRequest = {
+    document_ids: string[]
+}
+
+export type ShareResponse = {
+    token: string
+    share_url: string
+}
+
+export type SharedLinkInfo = {
+    document_names: string[];
+    owner_name: string;
+}
+
+export type SharedQueryRequest = {
+    question: string
+}
