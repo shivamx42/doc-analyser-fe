@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
 import type { Dispatch, SetStateAction } from 'react'
-import { FileText, Loader2 } from 'lucide-react'
+import { FileText, Loader2, Share2 } from 'lucide-react'
 
 import { getDocuments } from '../api/getDocuments'
 import DeleteDocumentButton from './DeleteDocumentButton'
 import type { DocumentListItem } from '../types'
+import ShareModal from './ShareModal'
 
 const MAX_SELECTED_DOCUMENTS = 10
 
@@ -40,6 +41,7 @@ export default function DocumentsPanel({
     const [name, setName] = useState("")
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState("")
+    const [isShareModalOpen, setIsShareModalOpen] = useState(false)
     const selectionLimit = Math.min(MAX_SELECTED_DOCUMENTS, documents.length)
 
     useEffect(() => {
@@ -108,13 +110,33 @@ export default function DocumentsPanel({
                                 : 'Upload documents to search them'}
                         </p>
                     </div>
-                    {documents.length > 0 ? (
-                        <p className="shrink-0 rounded-md border border-[#44a1bb]/30 bg-[#44a1bb]/10 px-2 py-1 text-xs font-semibold text-[#83cfe4]">
-                            {selectedDocumentIds.length}/{selectionLimit}
-                        </p>
-                    ) : null}
+                    <div className="flex flex-col items-end gap-2">
+                        {documents.length > 0 ? (
+                            <p className="shrink-0 rounded-md border border-[#44a1bb]/30 bg-[#44a1bb]/10 px-2 py-1 text-xs font-semibold text-[#83cfe4]">
+                                {selectedDocumentIds.length}/{selectionLimit}
+                            </p>
+                        ) : null}
+                        
+                        {selectedDocumentIds.length > 0 && (
+                            <button
+                                onClick={() => setIsShareModalOpen(true)}
+                                className="flex items-center gap-1.5 rounded-md bg-[#44a1bb] px-2.5 py-1.5 text-xs font-bold text-stone-950 transition hover:bg-[#388ba3] cursor-pointer "
+                            >
+                                <Share2 className="h-3.5 w-3.5" />
+                                Share
+                            </button>
+                        )}
+                    </div>
                 </div>
             )}
+            
+            {isShareModalOpen && (
+                <ShareModal 
+                    selectedDocumentIds={selectedDocumentIds} 
+                    onClose={() => setIsShareModalOpen(false)} 
+                />
+            )}
+
             
 
             {loading ? (
