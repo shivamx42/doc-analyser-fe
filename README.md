@@ -12,6 +12,9 @@ It is a React + Vite application where users can create an account, log in, uplo
 - Allows selecting up to 10 documents for focused search.
 - Sends questions to the backend and displays the generated answer.
 - Lets users delete documents from their library.
+- **Generates shareable links** for specific documents.
+- **Provides a public interface** for querying shared documents without an account.
+
 
 ## User Experience Flow
 
@@ -68,6 +71,17 @@ Relevant files:
 - `src/components/AskQuestion.tsx`
 - `src/api/askQuestion.ts`
 
+### 5. Sharing & Public Queries
+
+Authenticated users can generate a share link for selected documents. Recipients land on a public query page that fetches document metadata and allows AI querying.
+
+Relevant files:
+
+- `src/components/ShareModal.tsx`
+- `src/components/PublicQueryPage.tsx`
+- `src/api/share.ts`
+
+
 ## Project Structure
 
 ```text
@@ -90,7 +104,10 @@ frontend/
       Header.tsx
       LogoutButton.tsx
       UploadDocumet.tsx
+      ShareModal.tsx         # link generation modal
+      PublicQueryPage.tsx    # public chat interface
     lib/
+
       auth.ts              # local session storage and auth subscriptions
     App.tsx                # top-level app layout and screen switching
     main.tsx               # React entry point
@@ -116,6 +133,9 @@ Backend routes used by the frontend:
 - `GET /api/documents`
 - `DELETE /api/documents/delete/{document_id}`
 - `POST /api/query`
+- `GET /api/share/{token}`
+- `POST /api/share/{token}/query`
+
 
 ## State Management
 
@@ -154,7 +174,7 @@ npm install
 npm run dev
 ```
 
-The Vite dev server will print the local app URL in the terminal.
+Access the app at: http://localhost:5173
 
 ## Important Notes
 
